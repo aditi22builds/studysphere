@@ -6,7 +6,13 @@
 [![GUI Framework](https://img.shields.io/badge/GUI-CustomTkinter%206.0-purple.svg)](https://customtkinter.tomschimansky.com/)
 [![Database](https://img.shields.io/badge/Database-SQLite%203-lightgrey.svg)](https://www.sqlite.org/)
 [![Analytics](https://img.shields.io/badge/Analytics-NumPy%20%7C%20Matplotlib-orange.svg)](https://numpy.org/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-8B5CF6.svg)](https://aditi22builds.github.io/studysphere/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+---
+
+### 🌐 [Click Here to Launch Live Interactive Web Simulator](https://aditi22builds.github.io/studysphere/)
+Experience StudySphere's dark-mode dashboard, Pomodoro timer, and technical quiz directly in your browser without any installation!
 
 ---
 

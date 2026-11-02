@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudySphere — Personal Student Command Center (Live Interactive Preview)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+  <style>
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .pulse-indicator { animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  </style>
+</head>
+<body class="bg-[#0B0F19] text-[#F8FAFC] antialiased min-h-screen p-3 md:p-6 font-sans">
+
+  <!-- Header Banner -->
+  <div class="max-w-6xl mx-auto mb-4 flex flex-col md:flex-row md:items-center justify-between text-xs text-[#94A3B8] gap-2">
+    <div class="flex items-center space-x-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#10B981] pulse-indicator"></span>
+      <span class="text-white font-semibold">StudySphere Live Web Simulator</span>
+      <span>• Portfolio Demo for B.Tech CSE (Data Science)</span>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a href="https://github.com/aditi22builds/studysphere" target="_blank" class="text-[#A78BFA] hover:text-white transition flex items-center space-x-1">
+        <span>⭐ View on GitHub</span>
+      </a>
+      <span>•</span>
+      <span class="bg-[#8B5CF6]/20 text-[#A78BFA] px-2 py-0.5 rounded border border-[#8B5CF6]/30 font-mono text-[11px]">Python 3 • CustomTkinter • SQLite • NumPy</span>
+    </div>
+  </div>
+
+  <!-- Main Application Window Wrapper -->
+  <div class="max-w-6xl mx-auto bg-[#0F172A] border border-[#334155] rounded-2xl shadow-2xl overflow-hidden flex flex-col min-h-[720px]">
+    
+    <!-- Top Window Titlebar -->
+    <div class="bg-[#0B0F19] px-5 py-3 border-b border-[#334155] flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 rounded-full bg-[#EF4444]"></div>
+        <div class="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
+        <div class="w-3 h-3 rounded-full bg-[#10B981]"></div>
+        <span class="text-xs text-[#94A3B8] font-medium ml-3 hidden sm:inline">StudySphere — Personal Student Command Center</span>
+      </div>
+      <div class="flex items-center space-x-3 text-xs">
+        <span class="px-2.5 py-0.5 rounded bg-[#8B5CF6]/20 text-[#A78BFA] border border-[#8B5CF6]/30 font-semibold">Desktop App v1.0.0</span>
+      </div>
+    </div>
+
+    <!-- Body Layout: Sidebar + Viewport -->
+    <div class="flex flex-1 flex-col md:flex-row overflow-hidden">
+      
+      <!-- SIDEBAR -->
+      <aside class="w-full md:w-60 bg-[#0F172A] border-r border-[#334155] flex flex-col justify-between p-4">
+        <div>
+          <!-- Brand Logo -->
+          <div class="flex items-center space-x-3 px-2 py-3 mb-4">
+            <span class="text-3xl">🪐</span>
+            <div>
+              <h1 class="text-base font-bold text-white tracking-wide">StudySphere</h1>
+              <p class="text-[11px] text-[#A78BFA] font-medium">Command Center</p>
+            </div>
+          </div>
+
+          <!-- Navigation Links -->
+          <nav class="space-y-1" id="nav-list">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition bg-[#8B5CF6] text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>📊</span>
+                <span>Dashboard</span>
+              </span>
+            </button>
+            <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>✅</span>
+                <span>Tasks</span>
+              </span>
+              <span class="text-[10px] bg-[#1E293B] text-[#A78BFA] px-1.5 py-0.5 rounded border border-[#334155]">8</span>
+            </button>
+            <button onclick="switchTab('subjects')" id="nav-subjects" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>📚</span>
+                <span>Subjects</span>
+              </span>
+              <span class="text-[10px] bg-[#1E293B] text-[#38BDF8] px-1.5 py-0.5 rounded border border-[#334155]">5</span>
+            </button>
+            <button onclick="switchTab('timer')" id="nav-timer" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>⏱️</span>
+                <span>Focus Timer</span>
+              </span>
+              <span class="w-2 h-2 rounded-full bg-[#10B981] pulse-indicator"></span>
+            </button>
+            <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>📈</span>
+                <span>Analytics</span>
+              </span>
+            </button>
+            <button onclick="switchTab('quiz')" id="nav-quiz" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>💡</span>
+                <span>Quiz Zone</span>
+              </span>
+              <span class="text-[10px] bg-[#F59E0B]/20 text-[#F59E0B] px-1.5 py-0.5 rounded font-bold">18 Qs</span>
+            </button>
+            <button onclick="switchTab('notes')" id="nav-notes" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>📝</span>
+                <span>Notes</span>
+              </span>
+            </button>
+            <button onclick="switchTab('notifications')" id="nav-notifications" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white">
+              <span class="flex items-center space-x-2.5">
+                <span>🔔</span>
+                <span>Notifications</span>
+              </span>
+              <span class="text-[10px] bg-[#EF4444] text-white font-bold px-1.5 py-0.2 rounded-full">2</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Sidebar Footer Controls -->
+        <div class="pt-4 border-t border-[#334155] space-y-2 mt-4 md:mt-0">
+          <button onclick="loadDemoToast()" class="w-full bg-[#1E293B] hover:bg-[#8B5CF6] text-white text-xs font-semibold py-2 px-3 rounded-lg border border-[#334155] transition flex items-center justify-center space-x-2 shadow-sm">
+            <span>⚡</span>
+            <span>Load Demo Data</span>
+          </button>
+          <div class="text-[10px] text-center text-[#64748B] pt-1">
+            B.Tech CSE Portfolio Edition
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT VIEWPORT -->
+      <main class="flex-1 flex flex-col bg-[#090D16] overflow-y-auto max-h-[720px]">
+        
+        <!-- Topbar Header inside viewport -->
+        <header class="bg-[#0F172A] border-b border-[#334155] px-6 py-3.5 flex items-center justify-between sticky top-0 z-10">
+          <div>
+            <div class="text-xs font-semibold text-[#F8FAFC] flex items-center space-x-2">
+              <span>📅 Monday, November 2, 2026</span>
+              <span class="text-[#334155]">•</span>
+              <span class="text-[#10B981] font-mono text-[11px]">● Active Session</span>
+            </div>
+            <p class="text-[11px] text-[#94A3B8] italic mt-0.5">"First, solve the problem. Then, write the code." — John Johnson</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <button onclick="switchTab('tasks')" class="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm">
+              + Add Task
+            </button>
+            <button onclick="switchTab('timer')" class="bg-[#1E293B] hover:bg-[#273549] text-white text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#334155] transition">
+              ⏱️ Quick Focus
+            </button>
+          </div>
+        </header>
+
+        <!-- Dynamic Views -->
+        <div class="p-6">
+          
+          <!-- TAB 1: DASHBOARD -->
+          <div id="view-dashboard" class="space-y-6">
+            <div>
+              <h2 class="text-xl font-bold text-white">Academic Command Center</h2>
+              <p class="text-xs text-[#94A3B8]">Track assignments, study momentum, and upcoming deadlines in real time.</p>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="bg-[#1E293B] border border-[#334155] p-4 rounded-xl">
+                <div class="flex justify-between items-center text-xs text-[#94A3B8] font-bold">
+                  <span>TOTAL TASKS</span>
+                  <span>📋</span>
+                </div>
+                <div class="text-2xl font-bold text-[#8B5CF6] my-1">8</div>
+                <div class="text-xs text-[#94A3B8]">3 Completed (38% rate)</div>
+              </div>
+
+              <div class="bg-[#1E293B] border border-[#334155] p-4 rounded-xl">
+                <div class="flex justify-between items-center text-xs text-[#94A3B8] font-bold">
+                  <span>FOCUS TODAY</span>
+                  <span>⏱️</span>
+                </div>
+                <div class="text-2xl font-bold text-[#10B981] my-1">1.8h</div>
+                <div class="text-xs text-[#94A3B8]">110 / 120m target</div>
+              </div>
+
+              <div class="bg-[#1E293B] border border-[#334155] p-4 rounded-xl">
+                <div class="flex justify-between items-center text-xs text-[#94A3B8] font-bold">
+                  <span>ACTIVE COURSES</span>
+                  <span>📚</span>
+                </div>
+                <div class="text-2xl font-bold text-[#38BDF8] my-1">5</div>
+                <div class="text-xs text-[#94A3B8]">B.Tech Semester IV</div>
+              </div>
+
+              <div class="bg-[#1E293B] border border-[#EF4444]/40 p-4 rounded-xl">
+                <div class="flex justify-between items-center text-xs text-[#EF4444] font-bold">
+                  <span>OVERDUE TASKS</span>
+                  <span>⚠️</span>
+                </div>
+                <div class="text-2xl font-bold text-[#EF4444] my-1">1</div>
+                <div class="text-xs text-[#EF4444]">Combinatorics Unit Test 2</div>
+              </div>
+            </div>
+
+            <!-- Two-Column Grid: Chart + Deadlines -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              
+              <!-- Left: Weekly Bar Chart Simulation -->
+              <div class="lg:col-span-3 bg-[#1E293B] border border-[#334155] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                    <span>📊</span>
+                    <span>Weekly Study Momentum (NumPy & Matplotlib)</span>
+                  </h3>
+                  <span class="text-xs text-[#A78BFA] font-medium">Daily Hours</span>
+                </div>
+                <!-- Simulated CSS Bar Chart -->
+                <div class="h-44 flex items-end justify-between px-4 pb-2 border-b border-[#334155] space-x-3">
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#A78BFA] font-bold mb-1">1.0h</span>
+                    <div class="w-full bg-[#8B5CF6]/80 rounded-t h-20"></div>
+                    <span class="text-[10px] text-[#94A3B8] mt-2">Tue 27</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#A78BFA] font-bold mb-1">1.2h</span>
+                    <div class="w-full bg-[#8B5CF6]/80 rounded-t h-24"></div>
+                    <span class="text-[10px] text-[#94A3B8] mt-2">Wed 28</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#A78BFA] font-bold mb-1">0.8h</span>
+                    <div class="w-full bg-[#8B5CF6]/80 rounded-t h-16"></div>
+                    <span class="text-[10px] text-[#94A3B8] mt-2">Thu 29</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#A78BFA] font-bold mb-1">1.0h</span>
+                    <div class="w-full bg-[#8B5CF6]/80 rounded-t h-20"></div>
+                    <span class="text-[10px] text-[#94A3B8] mt-2">Fri 30</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#A78BFA] font-bold mb-1">1.5h</span>
+                    <div class="w-full bg-[#8B5CF6]/80 rounded-t h-32"></div>
+                    <span class="text-[10px] text-[#94A3B8] mt-2">Sat 31</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#A78BFA] font-bold mb-1">1.2h</span>
+                    <div class="w-full bg-[#8B5CF6]/80 rounded-t h-24"></div>
+                    <span class="text-[10px] text-[#94A3B8] mt-2">Sun 01</span>
+                  </div>
+                  <div class="flex-1 flex flex-col items-center">
+                    <span class="text-[10px] text-[#38BDF8] font-bold mb-1">1.8h</span>
+                    <div class="w-full bg-[#38BDF8] rounded-t h-36 shadow-lg shadow-[#38BDF8]/20"></div>
+                    <span class="text-[10px] text-[#F8FAFC] font-bold mt-2">Today</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center text-xs text-[#94A3B8] pt-3">
+                  <span>NumPy Mean: <b class="text-white">1.21 hrs/day</b></span>
+                  <span>Trend: <b class="text-[#10B981]">Rising (+)</b></span>
+                </div>
+              </div>
+
+              <!-- Right: Upcoming Deadlines -->
+              <div class="lg:col-span-2 bg-[#1E293B] border border-[#334155] rounded-xl p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+                      <span>⏳</span>
+                      <span>Upcoming Deadlines</span>
+                    </h3>
+                    <button onclick="switchTab('tasks')" class="text-xs text-[#A78BFA] hover:underline">View All →</button>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="p-2.5 rounded-lg bg-[#0F172A] border border-[#EF4444]/50 flex items-center justify-between">
+                      <div>
+                        <div class="text-xs font-bold text-white">Combinatorics Prep</div>
+                        <div class="text-[10px] text-[#F59E0B]">MA201 • Discrete Maths</div>
+                      </div>
+                      <span class="text-[10px] bg-[#EF4444] text-white font-bold px-2 py-0.5 rounded">OVERDUE</span>
+                    </div>
+
+                    <div class="p-2.5 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-between">
+                      <div>
+                        <div class="text-xs font-bold text-white">Vectorized Gradient Descent</div>
+                        <div class="text-[10px] text-[#EC4899]">DS204 • Machine Learning</div>
+                      </div>
+                      <span class="text-[10px] bg-[#F59E0B] text-black font-bold px-2 py-0.5 rounded">TOMORROW</span>
+                    </div>
+
+                    <div class="p-2.5 rounded-lg bg-[#0F172A] border border-[#334155] flex items-center justify-between">
+                      <div>
+                        <div class="text-xs font-bold text-white">Red-Black Tree Balancing</div>
+                        <div class="text-[10px] text-[#8B5CF6]">CS201 • Algorithms</div>
+                      </div>
+                      <span class="text-[10px] bg-[#3B82F6] text-white font-bold px-2 py-0.5 rounded">IN 2 DAYS</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-[#334155] flex justify-between items-center">
+                  <span class="text-xs text-[#94A3B8]">3 pending assignments</span>
+                  <button onclick="switchTab('tasks')" class="text-xs bg-[#8B5CF6]/20 text-[#A78BFA] px-2.5 py-1 rounded font-semibold hover:bg-[#8B5CF6]/30">Open Tasks</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB 2: TASKS -->
+          <div id="view-tasks" class="hidden space-y-5">
+            <div class="flex justify-between items-center">
+              <div>
+                <h2 class="text-xl font-bold text-white">Task Management</h2>
+                <p class="text-xs text-[#94A3B8]">Full CRUD operations with priority categorization and deadline tracking.</p>
+              </div>
+              <button onclick="alert('In StudySphere desktop, this opens a modal dialog to create a task with validation & quick-date shortcuts!')" class="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs font-bold px-4 py-2 rounded-lg transition">
+                + Add New Task
+              </button>
+            </div>
+
+            <!-- Task List -->
+            <div class="space-y-2">
+              <div class="bg-[#1E293B] border border-[#EF4444]/60 p-3.5 rounded-lg flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <input type="checkbox" class="w-4 h-4 rounded text-[#8B5CF6] bg-[#0F172A] border-[#334155]">
+                  <div>
+                    <h4 class="text-xs font-bold text-white">Prepare for Unit Test 2 - Combinatorics Proofs</h4>
+                    <div class="flex items-center space-x-2 text-[11px] mt-0.5">
+                      <span class="text-[#F59E0B] font-semibold">MA201</span>
+                      <span class="text-[#64748B]">•</span>
+                      <span class="text-[#EF4444] font-bold">Priority: High</span>
+                      <span class="text-[#64748B]">•</span>
+                      <span class="text-[#EF4444]">⚠️ Overdue by 1 day</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs text-[#94A3B8]">Due: 2026-11-01</span>
+                  <button class="px-2 py-1 text-xs bg-[#0F172A] rounded border border-[#334155] text-white hover:bg-[#334155]">✏️</button>
+                </div>
+              </div>
+
+              <div class="bg-[#1E293B] border border-[#334155] p-3.5 rounded-lg flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <input type="checkbox" class="w-4 h-4 rounded text-[#8B5CF6] bg-[#0F172A] border-[#334155]">
+                  <div>
+                    <h4 class="text-xs font-bold text-white">Vectorized Gradient Descent with NumPy</h4>
+                    <div class="flex items-center space-x-2 text-[11px] mt-0.5">
+                      <span class="text-[#EC4899] font-semibold">DS204</span>
+                      <span class="text-[#64748B]">•</span>
+                      <span class="text-[#EF4444] font-bold">Priority: High</span>
+                      <span class="text-[#64748B]">•</span>
+                      <span class="text-[#F59E0B]">📅 Due Tomorrow</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs text-[#94A3B8]">Due: 2026-11-03</span>
+                  <button class="px-2 py-1 text-xs bg-[#0F172A] rounded border border-[#334155] text-white hover:bg-[#334155]">✏️</button>
+                </div>
+              </div>
+
+              <div class="bg-[#1E293B] border border-[#334155] p-3.5 rounded-lg flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <input type="checkbox" class="w-4 h-4 rounded text-[#8B5CF6] bg-[#0F172A] border-[#334155]">
+                  <div>
+                    <h4 class="text-xs font-bold text-white">Implement Red-Black Tree Balancing in Python</h4>
+                    <div class="flex items-center space-x-2 text-[11px] mt-0.5">
+                      <span class="text-[#8B5CF6] font-semibold">CS201</span>
+                      <span class="text-[#64748B]">•</span>
+                      <span class="text-[#3B82F6] font-bold">Priority: Medium</span>
+                      <span class="text-[#64748B]">•</span>
+                      <span class="text-[#94A3B8]">📅 Due in 2 days</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs text-[#94A3B8]">Due: 2026-11-04</span>
+                  <button class="px-2 py-1 text-xs bg-[#0F172A] rounded border border-[#334155] text-white hover:bg-[#334155]">✏️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: FOCUS TIMER -->
+          <div id="view-timer" class="hidden space-y-6">
+            <div>
+              <h2 class="text-xl font-bold text-white">Pomodoro Focus Timer</h2>
+              <p class="text-xs text-[#94A3B8]">Non-blocking study interval state machine logging focus time directly to SQLite.</p>
+            </div>
+
+            <!-- Timer Card -->
+            <div class="bg-[#1E293B] border border-[#334155] p-8 rounded-2xl flex flex-col items-center justify-center text-center">
+              <div class="flex space-x-2 mb-6">
+                <button onclick="setTimer(25)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#8B5CF6] text-white" id="btn-focus">Focus (25m)</button>
+                <button onclick="setTimer(5)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#0F172A] text-[#94A3B8] border border-[#334155]" id="btn-short">Short Break (5m)</button>
+                <button onclick="setTimer(15)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#0F172A] text-[#94A3B8] border border-[#334155]" id="btn-long">Long Break (15m)</button>
+              </div>
+
+              <!-- Digits -->
+              <div class="text-7xl font-bold text-white font-mono my-3 tracking-wider" id="timer-display">25:00</div>
+
+              <!-- Progress bar -->
+              <div class="w-80 bg-[#0F172A] h-2 rounded-full overflow-hidden my-4 border border-[#334155]">
+                <div class="bg-[#8B5CF6] h-full w-1/4 transition-all duration-300" id="timer-bar"></div>
+              </div>
+
+              <!-- Controls -->
+              <div class="flex space-x-3 mt-4">
+                <button onclick="toggleTimer()" id="btn-start" class="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-lg shadow-[#8B5CF6]/30">
+                  ▶ Start Focus
+                </button>
+                <button onclick="resetTimer()" class="bg-[#0F172A] hover:bg-[#334155] text-[#94A3B8] font-bold text-sm px-4 py-2.5 rounded-xl border border-[#334155] transition">
+                  ↺ Reset
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: QUIZ ZONE -->
+          <div id="view-quiz" class="hidden space-y-6">
+            <div>
+              <h2 class="text-xl font-bold text-white">Python Knowledge Quiz Arena</h2>
+              <p class="text-xs text-[#94A3B8]">Curated CS question bank with instant scoring, feedback, and explanation review.</p>
+            </div>
+
+            <!-- Quiz Question Card -->
+            <div class="bg-[#1E293B] border border-[#334155] p-6 rounded-xl space-y-4">
+              <div class="flex justify-between items-center text-xs text-[#94A3B8]">
+                <span class="font-bold text-white">Question 1 of 5</span>
+                <span class="bg-[#8B5CF6]/20 text-[#A78BFA] px-2 py-0.5 rounded font-semibold">OOP & Dunder Methods</span>
+                <span class="text-[#F59E0B] font-mono">⏱️ 00:24</span>
+              </div>
+
+              <h3 class="text-base font-semibold text-white">Which special dunder method is invoked when str(object) or print(object) is called in Python?</h3>
+
+              <div class="space-y-2 pt-2">
+                <button onclick="selectQuizOpt(this, true)" class="w-full text-left p-3 rounded-lg bg-[#0F172A] border border-[#334155] hover:border-[#8B5CF6] text-xs text-white transition flex justify-between items-center">
+                  <span>A. __str__</span>
+                  <span class="text-[11px] text-[#10B981] font-bold opacity-0 check-indicator">✓ Correct</span>
+                </button>
+                <button onclick="selectQuizOpt(this, false)" class="w-full text-left p-3 rounded-lg bg-[#0F172A] border border-[#334155] hover:border-[#8B5CF6] text-xs text-white transition">
+                  <span>B. __repr__</span>
+                </button>
+                <button onclick="selectQuizOpt(this, false)" class="w-full text-left p-3 rounded-lg bg-[#0F172A] border border-[#334155] hover:border-[#8B5CF6] text-xs text-white transition">
+                  <span>C. __init__</span>
+                </button>
+                <button onclick="selectQuizOpt(this, false)" class="w-full text-left p-3 rounded-lg bg-[#0F172A] border border-[#334155] hover:border-[#8B5CF6] text-xs text-white transition">
+                  <span>D. __call__</span>
+                </button>
+              </div>
+
+              <div id="quiz-explanation" class="hidden p-3 rounded-lg bg-[#8B5CF6]/10 border border-[#8B5CF6]/30 text-xs text-[#A78BFA]">
+                💡 <b>Explanation:</b> <code>__str__</code> is intended to return a friendly, human-readable string representation of the instance, whereas <code>__repr__</code> provides unambiguous debug representation.
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 5: SUBJECTS -->
+          <div id="view-subjects" class="hidden space-y-4">
+            <div>
+              <h2 class="text-xl font-bold text-white">Academic Curriculum & Subjects</h2>
+              <p class="text-xs text-[#94A3B8]">Relational subject models with task counts and cumulative study metrics.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-[#1E293B] border-t-4 border-t-[#8B5CF6] border-x border-b border-[#334155] p-4 rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="text-sm font-bold text-white">Python & Advanced Data Structures</h4>
+                  <span class="text-xs bg-[#8B5CF6] text-white px-2 py-0.5 rounded font-bold">CS201</span>
+                </div>
+                <p class="text-xs text-[#94A3B8] mb-3">Trees, graph traversal, Dijkstra, Red-Black Trees.</p>
+                <div class="flex justify-between text-xs text-[#94A3B8] pt-2 border-t border-[#334155]">
+                  <span>Tasks: <b>3 total (1 pending)</b></span>
+                  <span>Study: <b>4.5 hrs</b></span>
+                </div>
+              </div>
+
+              <div class="bg-[#1E293B] border-t-4 border-t-[#EC4899] border-x border-b border-[#334155] p-4 rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="text-sm font-bold text-white">Machine Learning & NumPy</h4>
+                  <span class="text-xs bg-[#EC4899] text-white px-2 py-0.5 rounded font-bold">DS204</span>
+                </div>
+                <p class="text-xs text-[#94A3B8] mb-3">Vectorization, gradient descent, regression, and cost functions.</p>
+                <div class="flex justify-between text-xs text-[#94A3B8] pt-2 border-t border-[#334155]">
+                  <span>Tasks: <b>2 total (1 pending)</b></span>
+                  <span>Study: <b>6.2 hrs</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 6: ANALYTICS -->
+          <div id="view-analytics" class="hidden space-y-4">
+            <div>
+              <h2 class="text-xl font-bold text-white">Data Science Productivity Analytics</h2>
+              <p class="text-xs text-[#94A3B8]">Mathematical summaries calculated via NumPy array routines.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="bg-[#1E293B] border border-[#334155] p-4 rounded-xl">
+                <div class="text-xs text-[#94A3B8] font-bold">MEAN DURATION</div>
+                <div class="text-2xl font-bold text-[#38BDF8] my-1">54.2m</div>
+                <div class="text-xs text-[#94A3B8]">NumPy np.mean()</div>
+              </div>
+              <div class="bg-[#1E293B] border border-[#334155] p-4 rounded-xl">
+                <div class="text-xs text-[#94A3B8] font-bold">CONSISTENCY SCORE</div>
+                <div class="text-2xl font-bold text-[#10B981] my-1">88.4%</div>
+                <div class="text-xs text-[#94A3B8]">Based on σ std dev</div>
+              </div>
+              <div class="bg-[#1E293B] border border-[#334155] p-4 rounded-xl">
+                <div class="text-xs text-[#94A3B8] font-bold">STUDY MOMENTUM</div>
+                <div class="text-2xl font-bold text-[#A78BFA] my-1">Rising (+)</div>
+                <div class="text-xs text-[#94A3B8]">np.polyfit linear slope</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 7: NOTES -->
+          <div id="view-notes" class="hidden space-y-4">
+            <div>
+              <h2 class="text-xl font-bold text-white">Academic Notes Workspace</h2>
+              <p class="text-xs text-[#94A3B8]">Persistent notes with subject tags and keyword search indexing.</p>
+            </div>
+            <div class="bg-[#1E293B] border border-[#334155] rounded-xl p-5">
+              <div class="text-sm font-bold text-white mb-1">NumPy Vectorization vs Native Python Loops</div>
+              <span class="text-[10px] bg-[#EC4899]/20 text-[#EC4899] font-bold px-2 py-0.5 rounded">DS204 • NumPy</span>
+              <p class="text-xs text-[#94A3B8] mt-3 leading-relaxed font-mono bg-[#0F172A] p-3 rounded border border-[#334155]">
+                # Why Vectorization Matters<br><br>
+                NumPy ndarrays store homogeneous elements in contiguous C memory.<br>
+                Operating on them triggers SIMD vector instructions rather than<br>
+                Python interpreter loop overhead (up to 50x faster).
+              </p>
+            </div>
+          </div>
+
+          <!-- TAB 8: NOTIFICATIONS -->
+          <div id="view-notifications" class="hidden space-y-4">
+            <div>
+              <h2 class="text-xl font-bold text-white">Academic Notifications & Alerts</h2>
+              <p class="text-xs text-[#94A3B8]">Categorized deadline reminders and study goal tracking.</p>
+            </div>
+            <div class="space-y-3">
+              <div class="bg-[#1E293B] border-l-4 border-l-[#EF4444] border-y border-r border-[#334155] p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-[#EF4444] uppercase">CRITICAL OVERDUE</div>
+                  <div class="text-sm font-bold text-white mt-0.5">Combinatorics Unit Test 2</div>
+                  <div class="text-xs text-[#94A3B8]">Was due yesterday (2026-11-01) for Discrete Mathematics.</div>
+                </div>
+                <button class="bg-[#EF4444] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#DC2626]">Mark Done</button>
+              </div>
+              <div class="bg-[#1E293B] border-l-4 border-l-[#F59E0B] border-y border-r border-[#334155] p-4 rounded-xl flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-[#F59E0B] uppercase">DUE TOMORROW</div>
+                  <div class="text-sm font-bold text-white mt-0.5">Vectorized Gradient Descent with NumPy</div>
+                  <div class="text-xs text-[#94A3B8]">Due 2026-11-03 for Machine Learning Foundations.</div>
+                </div>
+                <button class="bg-[#1E293B] text-white border border-[#334155] text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#334155]">View Task</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script>
+    const tabs = ['dashboard', 'tasks', 'subjects', 'timer', 'analytics', 'quiz', 'notes', 'notifications'];
+
+    function switchTab(target) {
+      tabs.forEach(t => {
+        const view = document.getElementById('view-' + t);
+        const nav = document.getElementById('nav-' + t);
+        if (view) view.classList.add('hidden');
+        if (nav) {
+          nav.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-[#94A3B8] hover:bg-[#1E293B] hover:text-white";
+        }
+      });
+
+      const activeView = document.getElementById('view-' + target);
+      const activeNav = document.getElementById('nav-' + target);
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition bg-[#8B5CF6] text-white";
+      }
+    }
+
+    function loadDemoToast() {
+      alert("⚡ In the desktop app, clicking 'Load Demo Data' seeds authentic B.Tech Computer Science and Data Science coursework records into SQLite.\n\nAll your dashboard counters, Matplotlib charts, task lists, and quiz attempts immediately update!");
+    }
+
+    // Pomodoro logic in preview
+    let timerRunning = false;
+    let timerSecs = 1500;
+    let interval = null;
+
+    function setTimer(minutes) {
+      clearInterval(interval);
+      timerRunning = false;
+      timerSecs = minutes * 60;
+      updateDisplay();
+      document.getElementById('btn-start').innerText = "▶ Start Focus";
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('btn-start');
+      if (timerRunning) {
+        clearInterval(interval);
+        timerRunning = false;
+        btn.innerText = "▶ Resume";
+      } else {
+        timerRunning = true;
+        btn.innerText = "⏸ Pause";
+        interval = setInterval(() => {
+          if (timerSecs > 0) {
+            timerSecs--;
+            updateDisplay();
+          } else {
+            clearInterval(interval);
+            timerRunning = false;
+            btn.innerText = "▶ Start Focus";
+            alert("🎉 Pomodoro Session Completed! In the desktop app, this logs directly to study_sessions table in SQLite.");
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(interval);
+      timerRunning = false;
+      timerSecs = 1500;
+      updateDisplay();
+      document.getElementById('btn-start').innerText = "▶ Start Focus";
+    }
+
+    function updateDisplay() {
+      const m = Math.floor(timerSecs / 60);
+      const s = timerSecs % 60;
+      document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      const pct = ((1500 - timerSecs) / 1500) * 100;
+      document.getElementById('timer-bar').style.width = `${Math.min(100, Math.max(5, pct))}%`;
+    }
+
+    // Quiz selection in preview
+    function selectQuizOpt(btn, isCorrect) {
+      const expl = document.getElementById('quiz-explanation');
+      expl.classList.remove('hidden');
+      if (isCorrect) {
+        btn.classList.add('bg-[#10B981]/20', 'border-[#10B981]');
+        const check = btn.querySelector('.check-indicator');
+        if (check) check.classList.remove('opacity-0');
+      } else {
+        btn.classList.add('bg-[#EF4444]/20', 'border-[#EF4444]');
+      }
+    }
+  </script>
+</body>
+</html>
